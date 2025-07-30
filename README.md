@@ -1,5 +1,5 @@
-# Volunteer Planning and Matching Tool
-## Group 15 – MSE 434 Capstone
+# STEMSelect: Volunteer Planning and Matching Tool
+## Group 6 - MSE 401
 Dharsaa Bhagudeva, Harpreet Ghotra, Taylor Liew, Kathryn Percy-Robb, Nicole Thapa
 
 ## Overview
@@ -19,8 +19,7 @@ Our tool will provide:
 
 🖥️ Simple, accessible user interface
 
-
-## Implementation (in-progress)
+## Implementation (Done - Iteration 1)
 
 1. Scoring Algorithm (scores based on relevant skills and past experiences)
 2. Scheduling optimization (reads availability based on selected applicants)
