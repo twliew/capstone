@@ -24,6 +24,8 @@ Our tool will provide:
 1. Scoring Algorithm (scores based on relevant skills and past experiences)
 2. Scheduling optimization (reads availability based on selected applicants)
 
+Next steps: create a new branch for second iteration to develop prototype
+
 ## Github Files
 This Github contains the following files
 1. Final STEMSelect script (Jupyter Notebook)
