@@ -23,3 +23,11 @@ Our tool will provide:
 
 1. Scoring Algorithm (scores based on relevant skills and past experiences)
 2. Scheduling optimization (reads availability based on selected applicants)
+
+## Github Files
+This Github contains the following files
+1. Final STEMSelect script (Jupyter Notebook)
+2. Ranking Algorithm Demo Data (csv)
+4. Schedule Optimizer Demo Data (csv)
+5. Ranking Algorithm Demo Output (csv)
+6. Schedule Optimizer Demo Output (xlsx)
