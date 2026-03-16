@@ -35,6 +35,8 @@ Ensure you download this entire capstone github repo to the following file path:
 
 ``` C:\Users\<ADD YOUR USER NAME HERE>\Documents\Shiftly ```
 
+In VS Code, run the following command: ``` py -m pip install -r requirements.txt ``` to install all project dependencies and the required python version
+
 ## Github Files
 This Github contains the following files
 1. Final STEMSelect script (Jupyter Notebook)
