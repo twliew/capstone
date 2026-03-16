@@ -26,6 +26,15 @@ Our tool will provide:
 
 Next steps: create a new branch for second iteration to develop prototype
 
+## Run Shiftly Template Instructions
+In the two run buttons buttons: Generate Scores and Generate Schedule on the requirements entry sheet, update the following line in the code with YOUR folder path user name. Also ensure you save the template to the same file path as the VBA code:
+
+``` C:/Users/<ADD YOUR USER NAME HERE>/AppData/Local/Programs/Python/Python312/python.exe ```
+
+Ensure you download this entire capstone github repo to the following file path:
+
+``` C:\Users\<ADD YOUR USER NAME HERE>\Documents\Shiftly ```
+
 ## Github Files
 This Github contains the following files
 1. Final STEMSelect script (Jupyter Notebook)
