@@ -40,6 +40,14 @@ score_cutoff = req_entry_sheet['A7'].value or 0
 df.columns = df.columns.str.strip()
 df_score = df.copy()
 
+# ── Identify grade column ──────────────────────────────────────────────────────
+grade_col_matches = [c for c in df.columns if 'grade' in c.lower()]
+grade_col = grade_col_matches[0] if grade_col_matches else None
+if grade_col:
+    df_score['Grade'] = df_score[grade_col]
+else:
+    print("WARNING: No grade column found in applicants.xlsx")
+
 # ── Identify weekly availability columns ──────────────────────────────────────
 availability_cols = [c for c in df.columns if 'weekly availability' in c.lower()]
 print(f"Found availability columns: {availability_cols}")
