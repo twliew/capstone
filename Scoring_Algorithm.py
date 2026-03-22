@@ -1,5 +1,6 @@
 import pandas as pd
 import openpyxl
+from openpyxl.styles import Font, PatternFill
 
 # Load Shiftly Template
 shiftly_wb = openpyxl.load_workbook("Shiftly Template.xlsm", keep_vba=True)
@@ -93,8 +94,26 @@ output_wb = openpyxl.Workbook()
 output_ws = output_wb.active
 output_ws.title = "Scored Applicants"
 
+black_fill  = PatternFill("solid", fgColor="000000")
+purple_fill = PatternFill("solid", fgColor="5B3895")
+pink_fill   = PatternFill("solid", fgColor="D81159")
+white_font  = Font(color="FFFFFF", bold=True)
+
+answer_col_set      = set(answer_cols)
+score_col_set       = set(score_cols) | {'Score'}
+availability_col_set = set(availability_cols)
+
 for col_idx, col_name in enumerate(df_score_top.columns, start=1):
-    output_ws.cell(row=1, column=col_idx, value=col_name)
+    cell = output_ws.cell(row=1, column=col_idx, value=col_name)
+    if col_name in answer_col_set:
+        cell.fill = black_fill
+        cell.font = white_font
+    elif col_name in score_col_set:
+        cell.fill = purple_fill
+        cell.font = white_font
+    elif col_name in availability_col_set:
+        cell.fill = pink_fill
+        cell.font = white_font
 
 for row_idx, row in enumerate(df_score_top.itertuples(index=False), start=2):
     for col_idx, value in enumerate(row, start=1):
@@ -102,4 +121,3 @@ for row_idx, row in enumerate(df_score_top.itertuples(index=False), start=2):
 
 output_wb.save("scored_applicants.xlsx")
 print("Saved scored_applicants.xlsx")
-
