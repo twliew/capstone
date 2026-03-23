@@ -2,20 +2,20 @@ import pandas as pd
 import openpyxl
 from openpyxl.styles import Font, PatternFill
 
-# Load Shiftly Template
+#Load Shiftly Template
 shiftly_wb = openpyxl.load_workbook("Shiftly Template.xlsm", keep_vba=True)
 req_entry_sheet = shiftly_wb['Requirements Entry']
 
-# Import applicant data
+#Import applicant data
 df = pd.read_excel('applicants.xlsx')
 
-# Generate question sheet names dynamically based on what's actually in the workbook
+#Generate question sheet names dynamically
 question_sheets = [s for s in shiftly_wb.sheetnames if s.startswith('Question_') and s.__contains__('Template') == False]
 question_sheets = sorted(question_sheets, key=lambda s: int(s.split('_')[1]))
 num_questions = len(question_sheets)
 
-# ── Load question configs from each sheet ─────────────────────────────────────
-question_configs = {}  # { question_text: {option: score, ...} }
+#Load question configurations from Shiftly Template
+question_configs = {} 
 
 for sheet_name in question_sheets:
     ws = shiftly_wb[sheet_name]
@@ -34,14 +34,13 @@ for sheet_name in question_sheets:
 
 print(question_configs)
 
-# Score cutoff
+#Score cutoff
 score_cutoff = req_entry_sheet['A7'].value or 0
 
-# Clean column names
 df.columns = df.columns.str.strip()
 df_score = df.copy()
 
-# ── Identify grade column ──────────────────────────────────────────────────────
+#Find grade column
 grade_col_matches = [c for c in df.columns if 'grade' in c.lower()]
 grade_col = grade_col_matches[0] if grade_col_matches else None
 if grade_col:
@@ -49,19 +48,19 @@ if grade_col:
 else:
     print("WARNING: No grade column found in applicants.xlsx")
 
-# ── Identify weekly availability columns ──────────────────────────────────────
+#Find weekly availability columns
 availability_cols = [c for c in df.columns if 'weekly availability' in c.lower()]
 print(f"Found availability columns: {availability_cols}")
 
-# ── Fully dynamic scoring (matches by column header name) ─────────────────────
+#Dynamically calculate scores for each question based on the configurations
 dynamic_score_cols = []
 
 for question_text, option_score_map in question_configs.items():
     score_col = f'{question_text} (score)'
 
-    # Directly match by column name instead of value subset detection
+    #Directly match by column name in the applicants xlsx
     if question_text in df_score.columns:
-        # Score = sum of scores for each selected option (handles multi-select)
+        #Score=sum of scores for each selected option
         df_score[score_col] = df_score[question_text].apply(
             lambda cell: sum(
                 option_score_map.get(val.strip(), 0)
@@ -72,24 +71,25 @@ for question_text, option_score_map in question_configs.items():
     else:
         print(f"WARNING: No matching column found in CSV for question: '{question_text}'")
 
-# Total score is purely the sum of all dynamic question scores
+#Total score is the sum of all dynamic question scores
 df_score['Score'] = df_score[dynamic_score_cols].sum(axis=1)
 
-# Sort by score (highest to lowest)
+#Sort by score (highest to lowest)
 df_score = df_score.sort_values(by='Score', ascending=False).reset_index(drop=True)
 
-# ── Build final output column order ───────────────────────────────────────────
+#Build final output columns:
 fixed_cols  = ['Full Name', 'Email Address', 'Grade']
 answer_cols = list(question_configs.keys())
 score_cols  = [f'{q} (score)' for q in question_configs.keys()]
-tail_cols   = ['Score'] + availability_cols  # availability appended after Score
+tail_cols   = ['Score'] + availability_cols #add weekly availability columns to the end of the output
 
 final_cols = fixed_cols + answer_cols + score_cols + tail_cols
 final_cols = [c for c in final_cols if c in df_score.columns]
 
+#Filter to only output applicants who are above the score cutoff
 df_score_top = df_score[df_score["Score"] >= score_cutoff][final_cols]
 
-# ── Save to Excel ──────────────────────────────────────────────────────────────
+#Save to new Excel file with formatting
 output_wb = openpyxl.Workbook()
 output_ws = output_wb.active
 output_ws.title = "Scored Applicants"
@@ -119,5 +119,6 @@ for row_idx, row in enumerate(df_score_top.itertuples(index=False), start=2):
     for col_idx, value in enumerate(row, start=1):
         output_ws.cell(row=row_idx, column=col_idx, value=value)
 
+#Save the output workbook
 output_wb.save("scored_applicants.xlsx")
 print("Saved scored_applicants.xlsx")
